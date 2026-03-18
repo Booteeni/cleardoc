@@ -33,6 +33,13 @@ function isValidResultData(value: unknown): value is ResultData {
   }
   if (!(typeof v.deadline === "string" || v.deadline === null)) return false;
 
+  if (
+    !Array.isArray(v.important_flags) ||
+    !v.important_flags.every((f) => typeof f === "string")
+  ) {
+    return false;
+  }
+
   return true;
 }
 
@@ -89,6 +96,27 @@ export default function ResultsPage() {
                 deadline={data.deadline}
               />
             </div>
+
+            {data.important_flags.length > 0 ? (
+              <section className="mt-6 rounded-2xl border-l-4 border-amber-300 bg-[#fffbeb] px-4 py-4">
+                <h2 className="text-base font-bold text-amber-900">
+                  ⚠️ Things to be aware of
+                </h2>
+                <div className="mt-4 space-y-3">
+                  {data.important_flags.map((flag) => (
+                    <div
+                      key={flag}
+                      className="flex items-start gap-3 rounded-xl bg-[#fffbeb] border-l-4 border-amber-300 px-3 py-2"
+                    >
+                      <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center text-amber-700">
+                        ⚠️
+                      </span>
+                      <p className="text-sm leading-relaxed text-amber-900">{flag}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             {data.key_numbers.length > 0 ? (
               <section className="mt-8">

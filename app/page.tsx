@@ -4,6 +4,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { UploadZone } from "@/components/UploadZone";
 
 type ScreenState = "idle" | "loading" | "error";
@@ -65,6 +66,30 @@ export default function HomePage() {
   return (
     <main className="min-h-screen w-full">
       <section className="w-full bg-[#1a1f36] py-16 text-white">
+        <nav className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 pb-8">
+          <Link
+            href="/"
+            className="text-sm font-semibold text-white transition hover:text-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1f36]"
+          >
+            ClearDoc <span aria-hidden="true">📄</span>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="inline-flex rounded-md border border-white/20 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1f36]"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#1a1f36] transition hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1f36]"
+            >
+              Get started
+            </Link>
+          </div>
+        </nav>
+
         <div className="mx-auto w-full max-w-5xl px-6">
           <h1 className="text-center text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
             Understand any document. Instantly.

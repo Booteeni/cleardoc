@@ -2,57 +2,56 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import * as pdfParse from "pdf-parse";
 
 export const maxDuration = 60;
 export const runtime = "nodejs";
 
-const SYSTEM_PROMPT = `You are a calm, knowledgeable friend helping someone understand 
-a confusing document they have received. Your job is to make 
-them feel informed and reassured, not overwhelmed.
+const FREE_PAGE_LIMIT = 10;
+const PRO_PAGE_LIMIT = 30;
+const HARD_PAGE_LIMIT = 30;
 
-Explain the document as if talking to a smart 28-year-old with 
-no legal or financial background. Never use jargon. If you must 
-use a technical term, immediately explain it in brackets.
+const SYSTEM_PROMPT = `You are a knowledgeable friend helping someone 
+understand a document they have received or are about to sign. 
+Your job is to:
 
-Return your response as valid JSON only, with no extra text, 
-no markdown, no code blocks. Just raw JSON with exactly 
-these fields:
+1. Explain what the document actually means in plain English
+2. Flag anything unusual, risky, or important they need to be aware of
+3. Explain any legal or technical terms in simple language
+4. Tell them anything they might not realise but should know
+
+Write as if explaining to a smart friend who has never seen this type of document before. 
+Use simple words. If you use a technical term, immediately explain it in brackets.
+
+Be thorough but readable. Don't just summarise — actually explain what the terms MEAN for the person reading it.
+
+Return your response as valid JSON only, with no extra text, no markdown, no code blocks. 
+Just raw JSON with exactly these fields:
 
 {
-  document_type: string (be specific, e.g. 'Car Insurance 
-    Policy Summary', 'HMRC Self Assessment Letter', 
-    'Tenancy Agreement', 'Parking Charge Notice'),
-    
-  summary: string (write 5-7 sentences that cover:
-    - What this document actually is in one sentence
-    - Who sent it and why
-    - What it means for the person personally
-    - Any important numbers, dates or amounts mentioned
-    - Whether there is anything to worry about or not
-    - Make it feel like a friend explaining it over coffee),
-    
-  actions: array of 3-5 strings (make these very specific 
-    and practical, not generic. Bad example: 'Read the 
-    document carefully'. Good example: 'Check the renewal 
-    date on page 1 - if it is coming up in the next 30 days 
-    you need to decide whether to renew or switch providers'.
-    Each action should start with a verb and be under 25 words),
-    
-  urgency: one of exactly these three values: 
-    urgent, soon, no-action-needed
-    (urgent = needs action within 7 days,
-    soon = needs action within 30 days,
-    no-action-needed = informational only),
-    
-  deadline: string or null (any specific date or deadline 
-    mentioned, written as a plain English date like 
-    '15 April 2026', or null if none),
-    
-  key_numbers: array of strings or empty array (list any 
-    important amounts, dates, reference numbers or figures 
-    from the document, e.g. 
-    ['Policy number: ABC123', 'Annual premium: £450', 
-    'Renewal date: 15 June 2026'])
+  document_type: string (be specific, e.g. 'Assured Shorthold Tenancy Agreement',
+    'HMRC Self Assessment Letter'),
+
+  summary: string (write 6-8 sentences that:
+    - Say what this document is in one sentence
+    - Explain the most important terms and what they actually mean for this person
+    - Flag anything unusual, risky, or that they might not realise
+    - Mention any important numbers, dates or amounts
+    - End with whether there is anything to worry about overall),
+
+  important_flags: array of strings or empty array
+    (list anything the person MUST know or watch out for — unusual clauses, tight deadlines,
+    risks, things that could cost them money or affect their rights. Each flag under 30 words.
+    If nothing unusual, return empty array),
+
+  actions: array of 3-5 strings (very specific and practical next steps, not generic advice.
+    Each action should start with a verb, under 25 words),
+
+  urgency: one of exactly: urgent, soon, no-action-needed,
+
+  deadline: string or null (any specific date or deadline mentioned, or null if none),
+
+  key_numbers: array of strings or empty array (all important amounts, dates, reference numbers from the document)
 }`;
 
 type SupportedMediaType =
@@ -143,6 +142,30 @@ export async function POST(request: Request) {
     const client = new Anthropic({ apiKey });
 
     console.log("Sending to Claude...", { mediaType, base64Length: base64.length });
+
+    if (mediaType === "application/pdf") {
+      try {
+        const pdfData = await (pdfParse as any)(buffer);
+        const pageCount = pdfData?.numpages;
+        console.log("PDF page count:", pageCount);
+
+        if (
+          typeof pageCount === "number" &&
+          pageCount > HARD_PAGE_LIMIT
+        ) {
+          return Response.json(
+            {
+              error: "Document too long",
+              message: `This document has ${pageCount} pages. Please upload a document with 30 pages or fewer.`,
+              pageCount
+            },
+            { status: 400, headers: { "cache-control": "no-store" } }
+          );
+        }
+      } catch {
+        // Fail open: if pdf-parse fails, continue processing normally.
+      }
+    }
 
     const result = await client.messages.create({
       model: "claude-sonnet-4-20250514",

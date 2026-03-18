@@ -7,6 +7,7 @@ export type ResultData = {
   urgency: "urgent" | "soon" | "no-action-needed";
   deadline: string | null;
   key_numbers: string[];
+  important_flags: string[];
 };
 
 export function ResultCard({
