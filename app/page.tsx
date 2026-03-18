@@ -91,8 +91,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-[#f8f9fb] py-10 sm:py-12">
-        <div className="mx-auto w-full max-w-[600px] px-6">
+      <section className="w-full bg-white pt-6 pb-10">
+        <div className="mx-auto w-full max-w-[700px] px-6">
           {state === "loading" ? (
             <div className="rounded-2xl bg-white p-10 text-center shadow-sm ring-1 ring-slate-200">
               <div className="mx-auto flex w-full max-w-md flex-col items-center">
@@ -126,7 +126,7 @@ export default function HomePage() {
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 sm:p-10">
+            <div className="rounded-2xl bg-white p-7 shadow-sm ring-1 ring-slate-200 sm:p-9">
               <div className="mb-6">
                 <p className="text-sm font-semibold text-slate-900">
                   ClearDoc <span aria-hidden="true">📄</span>
@@ -189,7 +189,7 @@ export default function HomePage() {
                   disabled={!canSubmit}
                   onClick={handleSubmit}
                   className={[
-                    "inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 text-[15px] font-semibold transition",
+                    "inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 text-base font-semibold transition",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1f36] focus-visible:ring-offset-2",
                     canSubmit
                       ? "bg-[#1a1f36] text-white hover:bg-[#14192e] hover:shadow-[0_0_0_4px_rgba(26,31,54,0.10),0_18px_45px_-30px_rgba(26,31,54,0.65)]"

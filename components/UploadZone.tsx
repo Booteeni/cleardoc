@@ -66,7 +66,7 @@ export function UploadZone({ file, onFileSelected, accept, disabled }: UploadZon
           setFirstFile(e.dataTransfer.files);
         }}
         className={[
-          "group relative w-full min-h-[220px] rounded-2xl border border-dashed p-10 text-left transition sm:p-12",
+          "group relative w-full min-h-[200px] rounded-2xl border border-dashed p-10 text-left transition sm:p-12",
           "border-[#4A90D9]/40 bg-[#4A90D9]/[0.04] hover:bg-[#4A90D9]/[0.06]",
           "shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1f36] focus-visible:ring-offset-2",
