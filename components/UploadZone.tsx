@@ -66,21 +66,23 @@ export function UploadZone({ file, onFileSelected, accept, disabled }: UploadZon
           setFirstFile(e.dataTransfer.files);
         }}
         className={[
-          "group relative w-full rounded-2xl border p-12 text-left transition sm:p-14",
-          "border-slate-200/70 bg-slate-50/60 hover:bg-slate-50/80",
+          "group relative w-full min-h-[220px] rounded-2xl border border-dashed p-10 text-left transition sm:p-12",
+          "border-[#4A90D9]/40 bg-[#4A90D9]/[0.04] hover:bg-[#4A90D9]/[0.06]",
           "shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A90D9] focus-visible:ring-offset-2",
-          disabled ? "cursor-not-allowed opacity-60 hover:bg-slate-50/60" : "",
-          isDragging ? "border-[#4A90D9] bg-[#4A90D9]/6" : ""
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1f36] focus-visible:ring-offset-2",
+          disabled ? "cursor-not-allowed opacity-60 hover:bg-[#4A90D9]/[0.04]" : "",
+          isDragging
+            ? "border-[#4A90D9] bg-[#4A90D9]/[0.08] shadow-[0_0_0_4px_rgba(74,144,217,0.10)]"
+            : "hover:shadow-[0_0_0_4px_rgba(74,144,217,0.08)]"
         ].join(" ")}
         aria-label="Upload document"
       >
         <div className="flex flex-col items-center justify-center gap-5">
           <div
             className={[
-              "flex h-16 w-16 items-center justify-center rounded-2xl border transition sm:h-[72px] sm:w-[72px]",
-              "border-slate-200/70 bg-white shadow-sm",
-              isDragging ? "border-[#4A90D9] shadow-[0_10px_30px_-20px_rgba(74,144,217,0.55)]" : ""
+              "flex h-16 w-16 items-center justify-center rounded-2xl border transition sm:h-[76px] sm:w-[76px]",
+              "border-[#4A90D9]/20 bg-white shadow-sm",
+              isDragging ? "shadow-[0_18px_40px_-28px_rgba(26,31,54,0.55)]" : ""
             ].join(" ")}
             aria-hidden="true"
           >
@@ -90,7 +92,7 @@ export function UploadZone({ file, onFileSelected, accept, disabled }: UploadZon
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="text-[#4A90D9] transition group-hover:text-[#3f7fc0]"
+              className="text-[#4A90D9] transition group-hover:text-[#357bbd]"
             >
               <path
                 d="M12 16V4"
