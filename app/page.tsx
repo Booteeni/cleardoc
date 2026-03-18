@@ -15,10 +15,14 @@ export default function HomePage() {
   const [tab, setTab] = React.useState<InputTab>("file");
   const [text, setText] = React.useState("");
   const [state, setState] = React.useState<ScreenState>("idle");
-  const canSubmit = tab === "file" ? Boolean(file) : text.trim().length >= 50;
+  const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
+  const canSubmit =
+    tab === "file"
+      ? Boolean(file && file.size <= MAX_FILE_SIZE_BYTES)
+      : text.trim().length >= 50;
 
   async function handleSubmit() {
-    if (tab === "file" && !file) return;
+    if (tab === "file" && (!file || file.size > MAX_FILE_SIZE_BYTES)) return;
     if (tab === "text" && text.trim().length < 50) return;
 
     setState("loading");
@@ -103,7 +107,9 @@ export default function HomePage() {
                 <p className="mt-6 text-lg font-semibold text-slate-900">
                   Reading your document...
                 </p>
-                <p className="mt-2 text-sm text-slate-500">This usually takes 10–15 seconds</p>
+                <p className="mt-2 text-sm text-slate-500">
+                  Large documents can take up to 30 seconds
+                </p>
               </div>
             </div>
           ) : state === "error" ? (

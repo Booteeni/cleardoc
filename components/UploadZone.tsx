@@ -14,6 +14,12 @@ type UploadZoneProps = {
 export function UploadZone({ file, onFileSelected, accept, disabled }: UploadZoneProps) {
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const [isDragging, setIsDragging] = React.useState(false);
+  const [fileError, setFileError] = React.useState<string | null>(null);
+
+  const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
+  const MAX_FILE_SIZE_MB_LABEL = "20MB";
+  const FILE_TOO_LARGE_MESSAGE =
+    "This file is too large. Please try a smaller file under 20MB.";
 
   function openFileDialog() {
     if (disabled) return;
@@ -22,6 +28,14 @@ export function UploadZone({ file, onFileSelected, accept, disabled }: UploadZon
 
   function setFirstFile(files: FileList | null) {
     const f = files?.item(0) ?? null;
+
+    if (f && f.size > MAX_FILE_SIZE_BYTES) {
+      setFileError(FILE_TOO_LARGE_MESSAGE);
+      onFileSelected(null);
+      return;
+    }
+
+    setFileError(null);
     onFileSelected(f);
   }
 
@@ -123,6 +137,16 @@ export function UploadZone({ file, onFileSelected, accept, disabled }: UploadZon
             </p>
             <p className="mt-2 text-sm text-slate-500">Accepts PDF, JPG, or PNG</p>
           </div>
+
+          {fileError ? (
+            <p
+              className="mt-3 text-center text-sm font-medium text-rose-600"
+              role="alert"
+              aria-live="polite"
+            >
+              {fileError}
+            </p>
+          ) : null}
 
           {!file ? null : (
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm text-emerald-800">

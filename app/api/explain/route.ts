@@ -3,6 +3,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
+export const maxDuration = 60;
 export const runtime = "nodejs";
 
 const SYSTEM_PROMPT = `You are a calm, knowledgeable friend helping someone understand 
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
 
       const result = await client.messages.create({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1024,
+        max_tokens: 2048,
         system: SYSTEM_PROMPT,
         messages: [
           {
@@ -145,7 +146,7 @@ export async function POST(request: Request) {
 
     const result = await client.messages.create({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
+      max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [
         mediaType === "application/pdf"
